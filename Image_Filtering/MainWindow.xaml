@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Image_Filtering.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Image Filtering Application" Height="450" Width="800">
+        Title="Image Filtering Application" Height="450" Width="800" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,7 +17,7 @@
 
 
             <MenuItem Header="Filters" FontSize="15" Foreground="White" >
-                <MenuItem Header="Functional Filters" >
+                <MenuItem Header="Functional Filters" Foreground="Black" >
                     
                     <MenuItem Header="Inversion" Click="ApplyFunctionalFilterMenuItem_Click"/>
                     
@@ -36,22 +36,18 @@
 
 
 
-                <MenuItem Header="Convolutional Filters"  >
+                <MenuItem Header="Convolutional Filters" Foreground="Black"  >
                     <MenuItem Header="Blur" Click="ApplyConvolutionalFilterMenuItem_Click"/>
 
                     <MenuItem Header="Gaussian Blur" Click="ApplyConvolutionalFilterMenuItem_Click" />
 
                     <MenuItem Header="Sharpen" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                    <MenuItem Header="Edge Detection">
-                        <MenuItem Header="Horizontal" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                        <MenuItem Header="Vertical" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                        <MenuItem Header="Diagonal" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                    </MenuItem>
-                    <MenuItem Header="Emboss">
-                        <MenuItem Header="East Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                        <MenuItem Header="South Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                        <MenuItem Header="South East Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-                    </MenuItem>
+                    <MenuItem Header="Edge Detection" Click="ApplyConvolutionalFilterMenuItem_Click" />
+
+
+                    <MenuItem Header="Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
+
+
 
                 </MenuItem>
             </MenuItem>
