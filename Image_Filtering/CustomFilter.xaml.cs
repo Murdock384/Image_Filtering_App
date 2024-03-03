@@ -18,14 +18,11 @@ namespace Image_Filtering
         {
             InitializeComponent();
 
-            // Initialize the polyline with the identity filter
+           
             FunctionGraph.Points = new PointCollection() { new Point(0, 0), new Point(255, 255) };
             DrawEllipse(new Point(0, 0));
             DrawEllipse (new Point(255,255));
         }
-
-       
-       
 
 
         private void DrawEllipse(Point position)
@@ -52,27 +49,14 @@ namespace Image_Filtering
                 Canvas.SetTop(ellipse, position.Y - ellipse.Height / 2);
             }
         }
-        /*private void UpdatePolyline()
-        {
-            // Remove all existing ellipses
-            Canvas.Children.Clear();
-
-            // Redraw the polyline
-            FunctionGraph.Points = new PointCollection(FunctionGraph.Points.OrderBy(p => p.X));
-
-            // Draw ellipses for each point
-            foreach (Point point in FunctionGraph.Points)
-            {
-                DrawEllipse(point);
-            }
-        }*/
+        
         private void UpdatePolyline()
         {
-            // Update the polyline with sorted points
+            
             var orderedPoints = FunctionGraph.Points.OrderBy(p => p.X);
             FunctionGraph.Points = new PointCollection(orderedPoints);
 
-            // Remove ellipses for existing points
+           
             var existingEllipses = Canvas.Children.OfType<Ellipse>().ToList();
             foreach (var ellipse in existingEllipses)
             {
@@ -82,7 +66,7 @@ namespace Image_Filtering
                 }
             }
 
-            // Draw ellipses for each point
+            
             foreach (Point point in FunctionGraph.Points)
             {
                 // Check if an ellipse already exists for this point
@@ -252,8 +236,19 @@ namespace Image_Filtering
             }
         }
 
-        
-        
-        
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+           
+            List<Point> functionPoints = new List<Point>();
+            foreach (Point point in FunctionGraph.Points)
+            {
+                functionPoints.Add(point);
+            }
+
+            App.FilterPoints = functionPoints;
+        }
+
+
+
     }
 }

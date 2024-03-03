@@ -13,5 +13,6 @@ namespace Image_Filtering
     /// </summary>
     public partial class App : Application
     {
+        public static List<Point> FilterPoints { get; set; }
     }
 }

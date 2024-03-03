@@ -29,7 +29,8 @@
                     <MenuItem Header="Contrast Enhancement" Click="ApplyFunctionalFilterMenuItem_Click"/>
 
                     <MenuItem Header="Gamma Correction" Click="ApplyFunctionalFilterMenuItem_Click"/>
- 
+                    <MenuItem Header="Apply Custom Filter" Click="ApplyCustomFilterMenuItem_Click"/>
+
 
                 </MenuItem>
 

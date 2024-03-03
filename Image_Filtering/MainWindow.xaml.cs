@@ -26,6 +26,7 @@ namespace Image_Filtering
     {
         private Bitmap originalImage;
         private Bitmap filteredImage;
+        List<System.Windows.Point> functionPoints;
 
         public MainWindow()
         {
@@ -83,7 +84,7 @@ namespace Image_Filtering
 
         //Functional Filters
         
-        // Event handler for applying functional filters
+     
         private void ApplyFunctionalFilterMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -132,9 +133,67 @@ namespace Image_Filtering
             customFiltersWindow.Show();
         }
 
+        private void ApplyCustomFilterMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Retrieve the saved filter points from the global variable
+            functionPoints = App.FilterPoints;
 
+            // Apply the filter to the selected image
+            ApplyCustomFilterToImage(functionPoints);
+        }
 
+        private void ApplyCustomFilterToImage(List<System.Windows.Point> functionPoints)
+        {
+            if (originalImage == null)
+            {
+                MessageBox.Show("Please open an image first.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
+            // Create a new bitmap for the filtered image
+            filteredImage = new Bitmap(originalImage.Width, originalImage.Height);
+
+            for (int y = 0; y < originalImage.Height; y++)
+            {
+                for (int x = 0; x < originalImage.Width; x++)
+                {
+                    // Get the color value of the pixel in the original image
+                    System.Drawing.Color originalColor = originalImage.GetPixel(x, y);
+
+                    // Interpolate the output value from the polyline for each color component (R, G, B)
+                    double outputValueR = InterpolateOutputValueFromPolyline(functionPoints, originalColor.R);
+                    double outputValueG = InterpolateOutputValueFromPolyline(functionPoints, originalColor.G);
+                    double outputValueB = InterpolateOutputValueFromPolyline(functionPoints, originalColor.B);
+
+                    // Update the color value of the pixel in the filtered image
+                    System.Drawing.Color filteredColor = System.Drawing.Color.FromArgb(originalColor.A,
+                        (int)outputValueR, (int)outputValueG, (int)outputValueB);
+
+                    filteredImage.SetPixel(x, y, filteredColor);
+                }
+            }
+
+            // Display the filtered image
+            DisplayImage(filteredImage, false);
+        }
+
+        private double InterpolateOutputValueFromPolyline(List<System.Windows.Point> functionPoints, int x)
+        {
+            
+            System.Windows.Point leftPoint = functionPoints.FirstOrDefault(p => p.X <= x);
+            System.Windows.Point rightPoint = functionPoints.LastOrDefault(p => p.X >= x);
+
+            if (leftPoint == null || rightPoint == null)
+            {
+                
+                return 0; 
+            }
+
+            
+            double t = (x - leftPoint.X) / (rightPoint.X - leftPoint.X);
+            double outputValue = leftPoint.Y + t * (rightPoint.Y - leftPoint.Y);
+            return outputValue;
+        }
 
 
 

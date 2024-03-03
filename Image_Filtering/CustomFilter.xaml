@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Image_Filtering.CustomFilter"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Custom Filters" Height="450" Width="450" MouseDoubleClick="Window_MouseDoubleClick">
+        Title="Add or Edit Filters" Height="450" Width="450" MouseDoubleClick="Window_MouseDoubleClick">
     <Grid Background="#282726">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -10,12 +10,14 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Background="#86817C">
             <MenuItem Header="Edit" FontSize="13" Foreground="White">
-                
+                <MenuItem Header="Inversion" FontSize="13" Foreground="Black"/>
+                <MenuItem Header="Brightness Correction" FontSize="13" Foreground="Black"/>
+                <MenuItem Header="Contrast Enhancement" FontSize="13" Foreground="Black"/>
 
             </MenuItem>
-            <MenuItem Header="Save" FontSize="13" Foreground="White"/>
+            <MenuItem Header="Save" FontSize="13" Foreground="White" Click="SaveButton_Click"/>
         </Menu>
-        <TextBlock Text="Add a Custom Filter" FontSize="16" HorizontalAlignment="Left"  Foreground="White" Margin="212,31,0,295" Grid.Row="1" Width="140"/>
+        <TextBlock Text="Adda Custom Filter" FontSize="16" HorizontalAlignment="Left"  Foreground="White" Margin="212,31,0,295" Grid.Row="1" Width="140"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -24,11 +26,11 @@
             <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,10,0,10" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="X:" Foreground="White" Margin="0,0,5,0"/>
-                    <TextBox x:Name="XTextBox" Width="50"/>
+                    <TextBox x:Name="XTextBox" Width="51"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Y:" Foreground="White" Margin="0,0,5,0"/>
-                    <TextBox x:Name="YTextBox" Width="50"/>
+                    <TextBox x:Name="YTextBox" Width="52"/>
                 </StackPanel>
                 <Button Content="Move Point" Click="MovePoint_Click" Width="100" Margin="0,10,0,0"/>
             </StackPanel>
