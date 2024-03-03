@@ -13,9 +13,6 @@ namespace Image_Filtering
 {
     internal class Filters
     {
-
-
-
         public static int[,] KernelBlur = {
             { 1, 1, 1 },
             { 1, 1, 1 },
@@ -40,23 +37,13 @@ namespace Image_Filtering
             { -1, -1, -1 }
         };
 
-        /*private int[,] KernelEdgeDetection = {
-            { 0, 0, 0 },
-            { -1, 1, 0 },
-            { 0, 0, 0}
-        };*/
-
-        /*private int[,] KernelEmbossEast = {
-            { -1, 0, 1 },
-            { -1, 1, 1 },
-            { -1, 0, 1 }
-        };*/
-
         public static int[,] KernelEmbossSouth = {
             { -1, -1, -1 },
             { 0, 1, 0 },
             { 1, 1, 1 }
         };
+
+        //Functional Filters
         public static Bitmap ApplyInversionFilter(Bitmap image)
         {
             Bitmap filteredImage = new Bitmap(image.Width, image.Height);
@@ -268,6 +255,17 @@ namespace Image_Filtering
                 bitmap = new Bitmap(outStream);
             }
             return new Bitmap(bitmap);
+        }
+        public static BitmapImage ConvertBitmapToBitmapImage(Bitmap bitmap)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            MemoryStream memoryStream = new MemoryStream();
+            bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            bitmapImage.StreamSource = memoryStream;
+            bitmapImage.EndInit();
+            return bitmapImage;
         }
 
 

@@ -29,8 +29,7 @@
                     <MenuItem Header="Contrast Enhancement" Click="ApplyFunctionalFilterMenuItem_Click"/>
 
                     <MenuItem Header="Gamma Correction" Click="ApplyFunctionalFilterMenuItem_Click"/>
-                    <!--<MenuItem Header="Gamma Greater Than 1" Click="ApplyFunctionalFilterMenuItem_Click"/>
-                        <MenuItem Header="Gamma Lesser Than 1" Click="ApplyFunctionalFilterMenuItem_Click"/>-->
+ 
 
                 </MenuItem>
 
@@ -46,12 +45,10 @@
 
 
                     <MenuItem Header="Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
-
-
-
                 </MenuItem>
+                <MenuItem Header="Custom Filter" Click="CustomFiltersMenuItem_Click" Foreground="Black" />
             </MenuItem>
-            <MenuItem Header="Exit" Click="ExitMenuItem_Click" FontSize="15" Foreground="White" />
+            <MenuItem Header="Exit" Click="ExitMenuItem_Click" FontSize="15" Foreground="White"  />
         </Menu>
 
         <Grid Grid.Row="1" Background="#54504C" >

@@ -27,15 +27,6 @@ namespace Image_Filtering
         private Bitmap originalImage;
         private Bitmap filteredImage;
 
-
-
-       /* private int[,] KernelEmbossSouthEast = {
-            { -1, -1, 0 },
-            { -1, 1, 1 },
-            { 0, 1, 1 }
-        };*/
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -132,13 +123,21 @@ namespace Image_Filtering
                     return image;
             }
         }
+        //Custom Filters
+        private void CustomFiltersMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+          
+            CustomFilter customFiltersWindow = new CustomFilter();
+
+            customFiltersWindow.Show();
+        }
 
 
 
 
 
 
-   
+
 
 
         /* private Bitmap ApplyConvolutionalFilter(Bitmap image, int[,] kernel)
@@ -199,10 +198,10 @@ namespace Image_Filtering
          }*/
 
 
-       
 
 
-      
+
+
 
 
         private void ApplyConvolutionalFilterMenuItem_Click(object sender, RoutedEventArgs e)
@@ -250,25 +249,15 @@ namespace Image_Filtering
         {
             if (isOriginal)
             {
-                OriginalImageDisplay.Source = ConvertBitmapToBitmapImage(image);
+                OriginalImageDisplay.Source = Filters.ConvertBitmapToBitmapImage(image);
             }
             else
             {
-                FilteredImageDisplay.Source = ConvertBitmapToBitmapImage(image);
+                FilteredImageDisplay.Source = Filters.ConvertBitmapToBitmapImage(image);
             }
         }
 
-        private BitmapImage ConvertBitmapToBitmapImage(Bitmap bitmap)
-        {
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            MemoryStream memoryStream = new MemoryStream();
-            bitmap.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            bitmapImage.StreamSource = memoryStream;
-            bitmapImage.EndInit();
-            return bitmapImage;
-        }
+        
 
         
     }
