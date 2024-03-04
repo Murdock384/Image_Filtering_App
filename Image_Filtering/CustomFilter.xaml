@@ -10,14 +10,14 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" Background="#86817C">
             <MenuItem Header="Edit" FontSize="13" Foreground="White">
-                <MenuItem Header="Inversion" FontSize="13" Foreground="Black"/>
-                <MenuItem Header="Brightness Correction" FontSize="13" Foreground="Black"/>
-                <MenuItem Header="Contrast Enhancement" FontSize="13" Foreground="Black"/>
+                <MenuItem Header="Inversion" Click ="MenuItem_Inversion_Click" FontSize="13" Foreground="Black"/>
+                <MenuItem Header="Brightness Correction" Click="MenuItem_BrightnessCorrection_Click" FontSize="13" Foreground="Black"/>
+                <MenuItem Header="Contrast Enhancement" Click="MenuItem_ContrastEnhancementFilter_Click" FontSize="13" Foreground="Black"/>
 
             </MenuItem>
             <MenuItem Header="Save" FontSize="13" Foreground="White" Click="SaveButton_Click"/>
         </Menu>
-        <TextBlock Text="Adda Custom Filter" FontSize="16" HorizontalAlignment="Left"  Foreground="White" Margin="212,31,0,295" Grid.Row="1" Width="140"/>
+        <TextBlock Text="Add or Edit a Filter" FontSize="16" HorizontalAlignment="Left"  Foreground="White" Margin="212,31,0,295" Grid.Row="1" Width="140"/>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

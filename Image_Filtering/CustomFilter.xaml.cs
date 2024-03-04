@@ -18,10 +18,9 @@ namespace Image_Filtering
         {
             InitializeComponent();
 
-           
+
             FunctionGraph.Points = new PointCollection() { new Point(0, 0), new Point(255, 255) };
-            DrawEllipse(new Point(0, 0));
-            DrawEllipse (new Point(255,255));
+            UpdatePolyline();
         }
 
 
@@ -49,14 +48,14 @@ namespace Image_Filtering
                 Canvas.SetTop(ellipse, position.Y - ellipse.Height / 2);
             }
         }
-        
+
         private void UpdatePolyline()
         {
-            
+
             var orderedPoints = FunctionGraph.Points.OrderBy(p => p.X);
             FunctionGraph.Points = new PointCollection(orderedPoints);
 
-           
+
             var existingEllipses = Canvas.Children.OfType<Ellipse>().ToList();
             foreach (var ellipse in existingEllipses)
             {
@@ -66,7 +65,7 @@ namespace Image_Filtering
                 }
             }
 
-            
+
             foreach (Point point in FunctionGraph.Points)
             {
                 // Check if an ellipse already exists for this point
@@ -82,7 +81,7 @@ namespace Image_Filtering
 
         private void Canvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+
 
             Point mousePosition = e.GetPosition(Canvas);
             FunctionGraph.Points.Add(mousePosition);
@@ -91,21 +90,18 @@ namespace Image_Filtering
         }
 
 
-
-      
-
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Point clickPosition = e.GetPosition(Canvas);
 
-            // Check if the click position is close to any point on the polyline
+
             foreach (Point point in FunctionGraph.Points)
             {
                 if (IsCloseToPoint(clickPosition, point))
                 {
                     if (selectedPoint == point)
                     {
-                        // Deselect the point and update its appearance
+
                         selectedPoint = null;
                         UpdateEllipseAppearance(point, Brushes.Red);
                         XTextBox.Text = "";
@@ -113,13 +109,13 @@ namespace Image_Filtering
                     }
                     else
                     {
-                        // Deselect the previously selected point, if any
+
                         if (selectedPoint != null)
                         {
                             UpdateEllipseAppearance(selectedPoint.Value, Brushes.Red);
                         }
 
-                        // Select the new point and update its appearance
+
                         selectedPoint = point;
                         UpdateEllipseAppearance(point, Brushes.Green);
                         XTextBox.Text = selectedPoint?.X.ToString();
@@ -138,25 +134,25 @@ namespace Image_Filtering
             {
                 if (double.TryParse(XTextBox.Text, out double newX) && double.TryParse(YTextBox.Text, out double newY))
                 {
-                    
+
                     int index = FunctionGraph.Points.IndexOf(selectedPoint.Value);
 
-                    
+
                     if (selectedPoint.Value.X == 0 || selectedPoint.Value.X == 255)
                     {
-                        newY = Clamp(newY, 0, 255); 
+                        newY = Clamp(newY, 0, 255);
                         FunctionGraph.Points[index] = new Point(selectedPoint.Value.X, newY);
                     }
                     else
                     {
-                        
+
                         FunctionGraph.Points[index] = new Point(newX, newY);
                     }
 
-                    
+
                     UpdateEllipsePosition(index, FunctionGraph.Points[index]);
 
-                    
+
                     UpdatePolyline();
                 }
                 else
@@ -170,7 +166,7 @@ namespace Image_Filtering
             }
         }
 
-        
+
         private double Clamp(double value, double min, double max)
         {
             return Math.Max(min, Math.Min(value, max));
@@ -181,25 +177,25 @@ namespace Image_Filtering
         {
             Point clickPosition = e.GetPosition(Canvas);
 
-            // Check if the click position is close to any point on the polyline
-            for (int i = 1; i < FunctionGraph.Points.Count - 1; i++) // Exclude first and last points
+
+            for (int i = 1; i < FunctionGraph.Points.Count - 1; i++)
             {
                 Point point = FunctionGraph.Points[i];
                 if (IsCloseToPoint(clickPosition, point))
                 {
-                    // Remove the intermediary point
+
                     FunctionGraph.Points.RemoveAt(i);
 
-                    // Remove the corresponding ellipse
+
                     Canvas.Children.RemoveAt(i);
 
-                    // Update the polyline
+
                     UpdatePolyline();
 
-                    // Deselect any selected point
+
                     selectedPoint = null;
 
-                    // Update UI
+
                     XTextBox.Text = "";
                     YTextBox.Text = "";
 
@@ -212,43 +208,100 @@ namespace Image_Filtering
 
         private bool IsCloseToPoint(Point clickPosition, Point point)
         {
-            
+
             double threshold = 10;
 
-            
+
             double distance = Math.Sqrt(Math.Pow(clickPosition.X - point.X, 2) + Math.Pow(clickPosition.Y - point.Y, 2));
 
-            
+
             return distance <= threshold;
         }
 
         private void UpdateEllipseAppearance(Point point, Brush fillBrush)
         {
-            
+
             Ellipse ellipse = Canvas.Children.OfType<Ellipse>().FirstOrDefault(e =>
                 Canvas.GetLeft(e) + e.Width / 2 == point.X &&
                 Canvas.GetTop(e) + e.Height / 2 == point.Y);
 
             if (ellipse != null)
             {
-                
+
                 ellipse.Fill = fillBrush;
             }
         }
 
+
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-           
+
             List<Point> functionPoints = new List<Point>();
             foreach (Point point in FunctionGraph.Points)
             {
                 functionPoints.Add(point);
             }
 
-            App.FilterPoints = functionPoints;
+            App.CustomFilterInstance newFilter = new App.CustomFilterInstance
+            {
+                Name = "Custom Filter " + (App.customFilters.Count + 1), // Generate a unique name
+                FilterPoints = functionPoints
+            };
+
+            App.customFilters.Add(newFilter);
+            ((MainWindow)Application.Current.MainWindow).PopulateCustomFiltersMenu();
+            MessageBox.Show("Saved Filter!");
+
+
         }
 
+        //Modifying existing Functional Filters
+        private void UpdatePolylineForInversionFilter()
+        {
+            FunctionGraph.Points.Clear();
+            
+           
+            FunctionGraph.Points.Add(new Point(255, 0));
+            FunctionGraph.Points.Add(new Point(0, 255));
+            UpdatePolyline();
+        }
 
+        private void MenuItem_Inversion_Click(object sender, RoutedEventArgs e)
+        {
+            UpdatePolylineForInversionFilter();
+        }
+
+        private void UpdatePolylineForBrightnessCorrectionFilter()
+        {
+            FunctionGraph.Points.Clear();
+            FunctionGraph.Points.Add(new Point(0,50));
+            FunctionGraph.Points.Add(new Point(188, 255));
+            FunctionGraph.Points.Add(new Point(255, 255));
+            UpdatePolyline();
+        }
+
+        private void MenuItem_BrightnessCorrection_Click(object sender, RoutedEventArgs e)
+        {
+            UpdatePolylineForBrightnessCorrectionFilter();
+        }
+
+        private void UpdatePolylineForContrastEnhancementFilter()
+        {
+            FunctionGraph.Points.Clear();
+
+
+            FunctionGraph.Points.Add(new Point(0, 0));
+            FunctionGraph.Points.Add(new Point(50,0));
+            FunctionGraph.Points.Add(new Point(205, 255));
+            FunctionGraph.Points.Add(new Point(255, 255));
+            UpdatePolyline();
+        }
+
+        private void MenuItem_ContrastEnhancementFilter_Click(object sender, RoutedEventArgs e)
+        {
+            UpdatePolylineForContrastEnhancementFilter();
+        }
 
     }
 }

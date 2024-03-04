@@ -17,6 +17,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using Color = System.Windows.Media.Color;
 
 
 namespace Image_Filtering
@@ -26,12 +27,17 @@ namespace Image_Filtering
     {
         private Bitmap originalImage;
         private Bitmap filteredImage;
-        List<System.Windows.Point> functionPoints;
+        public List<App.CustomFilterInstance> customFilters = new List<App.CustomFilterInstance>();
 
         public MainWindow()
         {
             InitializeComponent();
             this.WindowState = WindowState.Maximized;
+           
+        }
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            PopulateCustomFiltersMenu();
         }
         private void OpenMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -124,8 +130,8 @@ namespace Image_Filtering
                     return image;
             }
         }
-        //Custom Filters
-        private void CustomFiltersMenuItem_Click(object sender, RoutedEventArgs e)
+        
+        private void CustomFiltersWindowOpen_Click(object sender, RoutedEventArgs e)
         {
           
             CustomFilter customFiltersWindow = new CustomFilter();
@@ -133,39 +139,61 @@ namespace Image_Filtering
             customFiltersWindow.Show();
         }
 
-        private void ApplyCustomFilterMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CustomFiltersItems_Click(object sender, RoutedEventArgs e)
         {
-            // Retrieve the saved filter points from the global variable
-            functionPoints = App.FilterPoints;
 
-            // Apply the filter to the selected image
-            ApplyCustomFilterToImage(functionPoints);
+            PopulateCustomFiltersMenu();
         }
 
-        private void ApplyCustomFilterToImage(List<System.Windows.Point> functionPoints)
+        public void PopulateCustomFiltersMenu()
         {
-            if (originalImage == null)
+            CustomFiltersItems.Items.Clear(); 
+
+           
+            foreach (var filter in App.customFilters)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Header = filter.Name; 
+                menuItem.Click += (sender, e) => CustomFilterMenuItem_Click(sender, e);
+                menuItem.Foreground = System.Windows.Media.Brushes.Black;
+                CustomFiltersItems.Items.Add(menuItem); 
+            }
+        }
+        private void CustomFilterMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            string filterName = menuItem.Header.ToString();
+
+            
+            App.CustomFilterInstance selectedFilter = App.customFilters.FirstOrDefault(filter => filter.Name == filterName);
+
+            Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
+            ApplyCustomFilterToImage(selectedFilter.FilterPoints,imageToFilter);
+        }
+
+        private void ApplyCustomFilterToImage(List<System.Windows.Point> functionPoints, Bitmap image)
+        {
+            if (image == null)
             {
                 MessageBox.Show("Please open an image first.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            // Create a new bitmap for the filtered image
-            filteredImage = new Bitmap(originalImage.Width, originalImage.Height);
+            Bitmap filteredImage = new Bitmap(image.Width, image.Height);
 
-            for (int y = 0; y < originalImage.Height; y++)
+            for (int y = 0; y < image.Height; y++)
             {
-                for (int x = 0; x < originalImage.Width; x++)
+                for (int x = 0; x < image.Width; x++)
                 {
-                    // Get the color value of the pixel in the original image
-                    System.Drawing.Color originalColor = originalImage.GetPixel(x, y);
+                    
+                    System.Drawing.Color originalColor = image.GetPixel(x, y);
 
-                    // Interpolate the output value from the polyline for each color component (R, G, B)
+                   
                     double outputValueR = InterpolateOutputValueFromPolyline(functionPoints, originalColor.R);
                     double outputValueG = InterpolateOutputValueFromPolyline(functionPoints, originalColor.G);
                     double outputValueB = InterpolateOutputValueFromPolyline(functionPoints, originalColor.B);
 
-                    // Update the color value of the pixel in the filtered image
+                    
                     System.Drawing.Color filteredColor = System.Drawing.Color.FromArgb(originalColor.A,
                         (int)outputValueR, (int)outputValueG, (int)outputValueB);
 
@@ -173,94 +201,101 @@ namespace Image_Filtering
                 }
             }
 
-            // Display the filtered image
+            
             DisplayImage(filteredImage, false);
         }
 
+
+
+
         private double InterpolateOutputValueFromPolyline(List<System.Windows.Point> functionPoints, int x)
         {
-            
-            System.Windows.Point leftPoint = functionPoints.FirstOrDefault(p => p.X <= x);
-            System.Windows.Point rightPoint = functionPoints.LastOrDefault(p => p.X >= x);
+
+            System.Windows.Point leftPoint = functionPoints.LastOrDefault(p => p.X <= x);
+            System.Windows.Point rightPoint = functionPoints.FirstOrDefault(p => p.X >= x);
 
             if (leftPoint == null || rightPoint == null)
             {
-                
-                return 0; 
+
+                return 0;
+            }
+            if(leftPoint == rightPoint)
+            {
+                return leftPoint.Y;
             }
 
-            
-            double t = (x - leftPoint.X) / (rightPoint.X - leftPoint.X);
-            double outputValue = leftPoint.Y + t * (rightPoint.Y - leftPoint.Y);
+
+            double y1 = leftPoint.Y;
+            double y2 = rightPoint.Y;
+            double x1 = leftPoint.X;
+            double x2 = rightPoint.X;
+
+            double outputValue = y1 + (y2 - y1) * (x - x1) / (x2 - x1);
             return outputValue;
         }
 
+        private void MedianFilter_Click(object sender, RoutedEventArgs e)
+        {
+            
 
+            Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
+            ApplyMedianFilter(imageToFilter);
+        }
 
+        public void ApplyMedianFilter(Bitmap image)
+        {
+            Bitmap filteredImage = new Bitmap(image.Width, image.Height);
 
+            
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    
+                    int[] neighborhood = GetNeighborhoodValues(image, x, y);
 
-        /* private Bitmap ApplyConvolutionalFilter(Bitmap image, int[,] kernel)
-         {
-             Bitmap filteredImage = new Bitmap(image.Width, image.Height);
-             int kernelSize = kernel.GetLength(0);
-             int radius = kernelSize / 2;
+                   
+                    Array.Sort(neighborhood);
 
-             for (int y = 0; y < image.Height; y++)
-             {
-                 for (int x = 0; x < image.Width; x++)
-                 {
-                     System.Drawing.Color filteredColor = ApplyKernel(image, kernel, x, y, kernelSize, radius);
-                     filteredImage.SetPixel(x, y, filteredColor);
-                 }
-             }
+                    
+                    int medianValue = neighborhood[neighborhood.Length / 2];
 
-             return filteredImage;
-         }
+                    
+                    filteredImage.SetPixel(x, y, System.Drawing.Color.FromArgb(medianValue, medianValue, medianValue));
+                }
+            }
 
-         private System.Drawing.Color ApplyKernel(Bitmap image, int[,] kernel, int x, int y, int kernelSize, int radius)
-         {
-             int totalWeight = 0;
-             int red = 0, green = 0, blue = 0;
+            DisplayImage(filteredImage, false);
+        }
 
-             for (int i = 0; i < kernelSize; i++)
-             {
-                 for (int j = 0; j < kernelSize; j++)
-                 {
-                     int xOffset = x - radius + j;
-                     int yOffset = y - radius + i;
+        private static int[] GetNeighborhoodValues(Bitmap image, int x, int y)
+        {
+            int[] values = new int[9];
+            int index = 0;
 
-                     if (xOffset >= 0 && xOffset < image.Width && yOffset >= 0 && yOffset < image.Height)
-                     {
-                         System.Drawing.Color pixelColor = image.GetPixel(xOffset, yOffset);
+            
+            for (int j = -1; j <= 1; j++)
+            {
+                for (int i = -1; i <= 1; i++)
+                {
+                    int pixelX = x + i;
+                    int pixelY = y + j;
 
-                         red += pixelColor.R * kernel[i, j];
-                         green += pixelColor.G * kernel[i, j];
-                         blue += pixelColor.B * kernel[i, j];
+                   
+                    pixelX = Math.Max(0, Math.Min(pixelX, image.Width - 1));
+                    pixelY = Math.Max(0, Math.Min(pixelY, image.Height - 1));
 
-                         totalWeight += kernel[i, j];
-                     }
-                 }
-             }
+                    
+                    System.Drawing.Color pixelColor = image.GetPixel(pixelX, pixelY);
+                    int grayscaleValue = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.59 + pixelColor.B * 0.11);
 
-             if (totalWeight > 0)
-             {
-                 red /= totalWeight;
-                 green /= totalWeight;
-                 blue /= totalWeight;
-             }
+                   
+                    values[index++] = grayscaleValue;
+                }
+            }
 
-             red = Math.Min(255, Math.Max(0, red));
-             green = Math.Min(255, Math.Max(0, green));
-             blue = Math.Min(255, Math.Max(0, blue));
-
-             return System.Drawing.Color.FromArgb(red, green, blue);
-         }*/
-
-
-
-
-
-
+            return values;
+        }
 
 
         private void ApplyConvolutionalFilterMenuItem_Click(object sender, RoutedEventArgs e)
@@ -313,6 +348,7 @@ namespace Image_Filtering
             else
             {
                 FilteredImageDisplay.Source = Filters.ConvertBitmapToBitmapImage(image);
+                filteredImage = image;
             }
         }
 

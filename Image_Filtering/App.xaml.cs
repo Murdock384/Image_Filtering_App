@@ -13,6 +13,13 @@ namespace Image_Filtering
     /// </summary>
     public partial class App : Application
     {
-        public static List<Point> FilterPoints { get; set; }
+        public static List<App.CustomFilterInstance> customFilters = new List<App.CustomFilterInstance>();
+        public class CustomFilterInstance
+        {
+            public string Name { get; set; }
+            public List<System.Windows.Point> FilterPoints { get; set; }
+            
+        }
+
     }
 }

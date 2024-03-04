@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Image_Filtering.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Image Filtering Application" Height="450" Width="800" WindowState="Maximized">
+        Title="Image Filtering Application" Height="450" Width="800" WindowState="Maximized" Loaded="MainWindow_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -29,7 +29,7 @@
                     <MenuItem Header="Contrast Enhancement" Click="ApplyFunctionalFilterMenuItem_Click"/>
 
                     <MenuItem Header="Gamma Correction" Click="ApplyFunctionalFilterMenuItem_Click"/>
-                    <MenuItem Header="Apply Custom Filter" Click="ApplyCustomFilterMenuItem_Click"/>
+                    <!--<MenuItem Header="Apply Custom Filter" Click="ApplyCustomFilterMenuItem_Click"/>-->
 
 
                 </MenuItem>
@@ -47,8 +47,10 @@
 
                     <MenuItem Header="Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
                 </MenuItem>
-                <MenuItem Header="Custom Filter" Click="CustomFiltersMenuItem_Click" Foreground="Black" />
+                <MenuItem Header="Custom Filter" Click="CustomFiltersWindowOpen_Click" Foreground="Black" />
             </MenuItem>
+            <MenuItem Name="CustomFiltersItems" Click="CustomFiltersItems_Click" Header="Custom Filters" FontSize="15" Foreground="White"  />
+            <MenuItem  Click="MedianFilter_Click" Header="Median Filter" FontSize="15" Foreground="White"  />
             <MenuItem Header="Exit" Click="ExitMenuItem_Click" FontSize="15" Foreground="White"  />
         </Menu>
 
@@ -71,8 +73,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <GridSplitter Grid.Column="1" Width="5" Background="#D6CA80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <Image x:Name="OriginalImageDisplay" Grid.Column="0" Stretch="Uniform" />
-            <Image x:Name="FilteredImageDisplay" Grid.Column="2" Stretch="Uniform"/>
+            <Image x:Name="OriginalImageDisplay" Grid.Column="0" Stretch="None" />
+            <Image x:Name="FilteredImageDisplay" Grid.Column="2" Stretch="None"/>
             
         </Grid>
     </Grid>
