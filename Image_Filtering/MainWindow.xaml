@@ -47,10 +47,23 @@
 
                     <MenuItem Header="Emboss" Click="ApplyConvolutionalFilterMenuItem_Click"/>
                 </MenuItem>
-                <MenuItem Header="Custom Filter" Click="CustomFiltersWindowOpen_Click" Foreground="Black" />
+                <MenuItem Name="CustomFiltersItems" Click="CustomFiltersItems_Click" Header="Custom Filters" Foreground="Black"  />
+
+                <MenuItem  Click="MedianFilter_Click" Header="Median Filter"  Foreground="Black"  />
+                <MenuItem  Click="GreyscaleFilter_Click" Header="Greyscale Filter"  Foreground="Black"  />
             </MenuItem>
-            <MenuItem Name="CustomFiltersItems" Click="CustomFiltersItems_Click" Header="Custom Filters" FontSize="15" Foreground="White"  />
-            <MenuItem  Click="MedianFilter_Click" Header="Median Filter" FontSize="15" Foreground="White"  />
+
+            <MenuItem Header="Create Custom Filter" Click="CustomFiltersWindowOpen_Click" FontSize="15" Foreground="White"/>
+
+            <MenuItem  Header="Dithering and Quantization" FontSize="15" Foreground="White">
+                <MenuItem Header="Average Dithering" Foreground="Black">
+                    <MenuItem Click="AverageDitheringKEqual2_Click" Header="k=2"  Foreground="Black"/>
+                    <MenuItem Click="AverageDitheringKEqual4_Click" Header="k=4"  Foreground="Black"/>
+                    <MenuItem Click="AverageDitheringKEqual8_Click" Header="k=8"  Foreground="Black"/>
+                    <MenuItem Click="AverageDitheringKEqual16_Click" Header="k=16"  Foreground="Black"/>
+                </MenuItem>
+                <MenuItem Header="Median Cut Quantization" Click="OpenMedianCutWindow_Click" Foreground="Black" />
+            </MenuItem>
             <MenuItem Header="Exit" Click="ExitMenuItem_Click" FontSize="15" Foreground="White"  />
         </Menu>
 
@@ -69,12 +82,12 @@
         <Grid Grid.Row="2" Background="#282726" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <!--<ColumnDefinition Width="Auto"/>-->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <GridSplitter Grid.Column="1" Width="5" Background="#D6CA80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            <Image x:Name="OriginalImageDisplay" Grid.Column="0" Stretch="None" />
-            <Image x:Name="FilteredImageDisplay" Grid.Column="2" Stretch="None"/>
+            <!--<GridSplitter Grid.Column="1" Width="5" Background="#D6CA80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>-->
+            <Image x:Name="OriginalImageDisplay" Grid.Column="0" Stretch="Uniform" Margin="20" />
+            <Image x:Name="FilteredImageDisplay" Grid.Column="2" Stretch="Uniform" Margin="20"/>
             
         </Grid>
     </Grid>

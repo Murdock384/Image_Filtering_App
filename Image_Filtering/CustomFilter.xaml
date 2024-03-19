@@ -24,13 +24,13 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,10,0,10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" RenderTransformOrigin="0.52,0.504" Width="100">
                     <TextBlock Text="X:" Foreground="White" Margin="0,0,5,0"/>
-                    <TextBox x:Name="XTextBox" Width="51"/>
+                    <TextBox x:Name="XTextBox" Width="42"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Width="99">
                     <TextBlock Text="Y:" Foreground="White" Margin="0,0,5,0"/>
-                    <TextBox x:Name="YTextBox" Width="52"/>
+                    <TextBox x:Name="YTextBox" Width="42"/>
                 </StackPanel>
                 <Button Content="Move Point" Click="MovePoint_Click" Width="100" Margin="0,10,0,0"/>
             </StackPanel>

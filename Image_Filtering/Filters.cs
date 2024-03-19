@@ -268,6 +268,77 @@ namespace Image_Filtering
             return bitmapImage;
         }
 
+        public static Bitmap ConvertToGrayscale(Bitmap image)
+        {
+            Bitmap grayscaleImage = new Bitmap(image.Width, image.Height);
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    Color pixelColor = image.GetPixel(x, y);
+                    int grayValue = (int)(0.2126 * pixelColor.R + 0.7152 * pixelColor.G + 0.0722 * pixelColor.B);
+                    Color grayColor = Color.FromArgb(grayValue, grayValue, grayValue);
+                    grayscaleImage.SetPixel(x, y, grayColor);
+                }
+            }
+
+            return grayscaleImage;
+        }
+        public static Bitmap ApplyMedianFilter(Bitmap image)
+        {
+            Bitmap filteredImage = new Bitmap(image.Width, image.Height);
+
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+
+                    int[] neighborhood = GetNeighborhoodValues(image, x, y);
+
+
+                    Array.Sort(neighborhood);
+
+
+                    int medianValue = neighborhood[neighborhood.Length / 2];
+
+
+                    filteredImage.SetPixel(x, y, System.Drawing.Color.FromArgb(medianValue, medianValue, medianValue));
+                }
+            }
+
+            return filteredImage;
+        }
+        private static int[] GetNeighborhoodValues(Bitmap image, int x, int y)
+        {
+            int[] values = new int[9];
+            int index = 0;
+
+
+            for (int j = -1; j <= 1; j++)
+            {
+                for (int i = -1; i <= 1; i++)
+                {
+                    int pixelX = x + i;
+                    int pixelY = y + j;
+
+
+                    pixelX = Math.Max(0, Math.Min(pixelX, image.Width - 1));
+                    pixelY = Math.Max(0, Math.Min(pixelY, image.Height - 1));
+
+
+                    System.Drawing.Color pixelColor = image.GetPixel(pixelX, pixelY);
+                    int grayscaleValue = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.59 + pixelColor.B * 0.11);
+
+
+                    values[index++] = grayscaleValue;
+                }
+            }
+
+            return values;
+        }
+
 
 
 

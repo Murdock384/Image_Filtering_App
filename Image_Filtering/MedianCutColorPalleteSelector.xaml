@@ -1,0 +1,16 @@
+﻿<Window x:Class="Image_Filtering.MedianCutColorPalleteSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Image_Filtering"
+        mc:Ignorable="d"
+        Title="MedianCutColorPalleteSelector" Height="200" Width="250">
+    <Grid>
+        <StackPanel Margin="10">
+            <TextBlock Text="Enter number of palettes:" Margin="0 0 0 5"/>
+            <TextBox x:Name="PaletteCountTextBox" Margin="0 0 0 10"/>
+            <Button Content="Confirm" Click="ConfirmButton_Click" Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>

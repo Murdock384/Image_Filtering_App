@@ -8,9 +8,7 @@ using System.Windows;
 
 namespace Image_Filtering
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    
     public partial class App : Application
     {
         public static List<App.CustomFilterInstance> customFilters = new List<App.CustomFilterInstance>();

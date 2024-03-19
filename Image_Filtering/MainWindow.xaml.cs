@@ -234,69 +234,29 @@ namespace Image_Filtering
             return outputValue;
         }
 
+
+
+        private void GreyscaleFilter_Click(object sender, RoutedEventArgs e)
+        {
+
+
+            Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
+            Bitmap greyscaleFiltered = Filters.ConvertToGrayscale(imageToFilter);
+            DisplayImage(greyscaleFiltered, false);
+        }
         private void MedianFilter_Click(object sender, RoutedEventArgs e)
         {
             
 
             Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
-            ApplyMedianFilter(imageToFilter);
+            Bitmap medianFiltered = Filters.ApplyMedianFilter(imageToFilter);
+            DisplayImage(medianFiltered, false);
         }
 
-        public void ApplyMedianFilter(Bitmap image)
-        {
-            Bitmap filteredImage = new Bitmap(image.Width, image.Height);
+        
+        
 
-            
-            for (int y = 0; y < image.Height; y++)
-            {
-                for (int x = 0; x < image.Width; x++)
-                {
-                    
-                    int[] neighborhood = GetNeighborhoodValues(image, x, y);
-
-                   
-                    Array.Sort(neighborhood);
-
-                    
-                    int medianValue = neighborhood[neighborhood.Length / 2];
-
-                    
-                    filteredImage.SetPixel(x, y, System.Drawing.Color.FromArgb(medianValue, medianValue, medianValue));
-                }
-            }
-
-            DisplayImage(filteredImage, false);
-        }
-
-        private static int[] GetNeighborhoodValues(Bitmap image, int x, int y)
-        {
-            int[] values = new int[9];
-            int index = 0;
-
-            
-            for (int j = -1; j <= 1; j++)
-            {
-                for (int i = -1; i <= 1; i++)
-                {
-                    int pixelX = x + i;
-                    int pixelY = y + j;
-
-                   
-                    pixelX = Math.Max(0, Math.Min(pixelX, image.Width - 1));
-                    pixelY = Math.Max(0, Math.Min(pixelY, image.Height - 1));
-
-                    
-                    System.Drawing.Color pixelColor = image.GetPixel(pixelX, pixelY);
-                    int grayscaleValue = (int)(pixelColor.R * 0.3 + pixelColor.G * 0.59 + pixelColor.B * 0.11);
-
-                   
-                    values[index++] = grayscaleValue;
-                }
-            }
-
-            return values;
-        }
-
+     
 
         private void ApplyConvolutionalFilterMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -338,6 +298,55 @@ namespace Image_Filtering
             }
         }
 
+        private void AverageDitheringKEqual2_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyAverageDithering(2);
+        }
+
+        private void AverageDitheringKEqual4_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyAverageDithering(4);
+        }
+
+        private void AverageDitheringKEqual8_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyAverageDithering(8);
+        }
+
+        private void AverageDitheringKEqual16_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyAverageDithering(16);
+        }
+
+        private void ApplyAverageDithering(int splits)
+        {
+            Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
+            Bitmap ditheredImage = Dithering.ApplyAverageDithering(imageToFilter, splits);
+
+
+            DisplayImage(ditheredImage, false);
+        }
+
+        private void OpenMedianCutWindow_Click(object sender, RoutedEventArgs e)
+        {
+            MedianCutColorPalleteSelector selectorWindow = new MedianCutColorPalleteSelector();
+            if (selectorWindow.ShowDialog() == true)
+            {
+                int selectedPaletteCount = selectorWindow.SelectedPaletteCount;
+                if (selectedPaletteCount > 0)
+                {
+                    Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
+                    Bitmap quantizedImage = MedianCut.MedianCutColorQuantization.ApplyMedianCutColorQuantization(imageToFilter, selectedPaletteCount);
+                    DisplayImage(quantizedImage, false);
+
+                }
+                else
+                {
+                    MessageBox.Show("Not Enough Color Palleted entered for processing!");
+                }
+                
+            }
+        }
 
         private void DisplayImage(Bitmap image, bool isOriginal)
         {

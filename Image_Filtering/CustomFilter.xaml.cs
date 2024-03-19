@@ -68,7 +68,7 @@ namespace Image_Filtering
 
             foreach (Point point in FunctionGraph.Points)
             {
-                // Check if an ellipse already exists for this point
+                
                 if (!existingEllipses.Any(ellipse =>
                     Math.Abs(Canvas.GetLeft(ellipse) + ellipse.Width / 2 - point.X) < 1 &&
                     Math.Abs(Canvas.GetTop(ellipse) + ellipse.Height / 2 - point.Y) < 1))

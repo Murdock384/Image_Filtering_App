@@ -71,13 +71,22 @@
     <Compile Include="CustomFilter.xaml.cs">
       <DependentUpon>CustomFilter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dithering.cs" />
     <Compile Include="Filters.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MedianCutColorPalleteSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MedianCut.cs" />
+    <Compile Include="MedianCutColorPalleteSelector.xaml.cs">
+      <DependentUpon>MedianCutColorPalleteSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
