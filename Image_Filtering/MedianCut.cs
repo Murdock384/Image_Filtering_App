@@ -63,37 +63,7 @@ namespace Image_Filtering
 
                 return cubes.Select(cube => cube.AverageColor).ToList();
             }
-            /* private static List<Color> BuildPalette(Bitmap image, int paletteSize)
-             {
-                 List<Color> colors = new List<Color>();
-                 for (int x = 0; x < image.Width; x++)
-                 {
-                     for (int y = 0; y < image.Height; y++)
-                     {
-                         colors.Add(image.GetPixel(x, y));
-                     }
-                 }
-
-                 // Create initial color cubes for each pixel's color
-                 List<ColorCube> cubes = colors.Select(color => new ColorCube(new List<Color> { color })).ToList();
-
-                 // Continue splitting until the desired palette size is reached
-                 while (cubes.Count < paletteSize)
-                 {
-                     // Select and remove a color cube from the list
-                     ColorCube cubeToSplit = cubes.First();
-                     cubes.RemoveAt(0);
-
-                     // Split the cube into two halves
-                     List<ColorCube> splitCubes = cubeToSplit.Split();
-
-                     // Add the split cubes to the end of the list
-                     cubes.AddRange(splitCubes);
-                 }
-
-                 // Return the average color of each cube as the palette
-                 return cubes.Select(cube => cube.AverageColor).ToList();
-             }*/
+            
 
             private static Color FindClosestColor(Color target, List<Color> palette)
             {

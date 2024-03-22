@@ -254,10 +254,6 @@ namespace Image_Filtering
         }
 
         
-        
-
-     
-
         private void ApplyConvolutionalFilterMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -322,8 +318,6 @@ namespace Image_Filtering
         {
             Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
             Bitmap ditheredImage = Dithering.ApplyAverageDithering(imageToFilter, splits);
-
-
             DisplayImage(ditheredImage, false);
         }
 

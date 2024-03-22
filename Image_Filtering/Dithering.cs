@@ -47,7 +47,7 @@ namespace Image_Filtering
         }
 
 
-        private static Bitmap ApplyAverageDitheringToColor(Bitmap originalImage, int splits)
+        /*private static Bitmap ApplyAverageDitheringToColor(Bitmap originalImage, int splits)
         {
             int range = 256 / splits;
 
@@ -106,27 +106,127 @@ namespace Image_Filtering
             }
 
             return ditheredImage;
-        }
+        }*/
 
 
-       
-
-        public static Bitmap ApplyAverageDitheringToGrayscale(Bitmap originalImage, int splits)
+        public static Bitmap ApplyAverageDitheringToColor(Bitmap originalImage, int splits)
         {
-           
-
-            
             Bitmap ditheredImage = new Bitmap(originalImage.Width, originalImage.Height);
-
-            
             int range = 255 / (splits - 1);
 
-            // Compute the thresholds for each split
-            int[] thresholds = new int[splits - 1]; 
-            for (int i = 0; i < splits - 1; i++)
+            // Compute the thresholds for each split for each color channel
+            int[][] thresholds = new int[3][]; // Three color channels: Red, Green, Blue
+            for (int channel = 0; channel < 3; channel++)
             {
-                int sum = 0;
-                int count = 0;
+                thresholds[channel] = new int[splits - 1];
+                for (int i = 0; i < splits - 1; i++)
+                {
+                    int sum = 0;
+                    int count = 0;
+                    for (int y = 0; y < originalImage.Height; y++)
+                    {
+                        for (int x = 0; x < originalImage.Width; x++)
+                        {
+                            Color pixel = originalImage.GetPixel(x, y);
+                            int intensity = 0;
+                            switch (channel)
+                            {
+                                case 0:
+                                    intensity = pixel.R;
+                                    break;
+                                case 1: 
+                                    intensity = pixel.G;
+                                    break;
+                                case 2: 
+                                    intensity = pixel.B;
+                                    break;
+                            }
+
+                            if (intensity >= i * range && intensity < (i + 1) * (range + 1))
+                            {
+                                sum += intensity;
+                                count++;
+                            }
+                        }
+                    }
+                    thresholds[channel][i] = count == 0 ? 0 : sum / count;
+                }
+            }
+
+            // Apply dithering for each color channel
+            for (int y = 0; y < originalImage.Height; y++)
+            {
+                for (int x = 0; x < originalImage.Width; x++)
+                {
+                    Color pixel = originalImage.GetPixel(x, y);
+
+                   
+                    int[] newIntensities = new int[3];
+                    for (int channel = 0; channel < 3; channel++)
+                    {
+                        int intensity = 0;
+                        switch (channel)
+                        {
+                            case 0: 
+                                intensity = pixel.R;
+                                break;
+                            case 1: 
+                                intensity = pixel.G;
+                                break;
+                            case 2:
+                                intensity = pixel.B;
+                                break;
+                        }
+
+                        // Find the range that the intensity belongs to for the current channel
+                        int rangeIndex = Math.Min(intensity / (range + 1), splits - 2);
+
+                        // Assign the new intensity based on the threshold for the current channel
+                        int newIntensity = intensity <= thresholds[channel][rangeIndex] ? rangeIndex * range : (rangeIndex + 1) * range;
+
+                        newIntensities[channel] = newIntensity;
+                    }
+
+                    // Set the new pixel color
+                    Color newPixel = Color.FromArgb(newIntensities[0], newIntensities[1], newIntensities[2]);
+                    ditheredImage.SetPixel(x, y, newPixel);
+                }
+            }
+
+            return ditheredImage;
+        }
+            public static Bitmap ApplyAverageDitheringToGrayscale(Bitmap originalImage, int splits)
+            {
+           
+                Bitmap ditheredImage = new Bitmap(originalImage.Width, originalImage.Height);
+
+            
+                int range = 255 / (splits - 1);
+
+                // Compute the thresholds for each split
+                int[] thresholds = new int[splits - 1]; 
+                for (int i = 0; i < splits - 1; i++)
+                {
+                    int sum = 0;
+                    int count = 0;
+                    for (int y = 0; y < originalImage.Height; y++)
+                    {
+                        for (int x = 0; x < originalImage.Width; x++)
+                        {
+                            Color pixel = originalImage.GetPixel(x, y);
+                            int intensity = pixel.R;
+
+                            if (intensity >= i * (range) && intensity < (i + 1) * (range + 1))
+                            {
+                                sum += intensity;
+                                count++;
+                            }
+                        }
+                    }
+                    thresholds[i] = count == 0 ? 0 : sum / count;
+                }
+
+                // Apply dithering
                 for (int y = 0; y < originalImage.Height; y++)
                 {
                     for (int x = 0; x < originalImage.Width; x++)
@@ -134,38 +234,20 @@ namespace Image_Filtering
                         Color pixel = originalImage.GetPixel(x, y);
                         int intensity = pixel.R;
 
-                        if (intensity >= i * (range) && intensity < (i + 1) * (range + 1))
-                        {
-                            sum += intensity;
-                            count++;
-                        }
+                        // Find the range that the intensity belongs to
+                        int rangeIndex = Math.Min(intensity / (range + 1), splits - 2); 
+
+                        // Assign the new intensity based on the threshold
+                        int newIntensity = intensity <= thresholds[rangeIndex] ? rangeIndex * (range) : (rangeIndex + 1) * (range);
+
+                        // Set the new pixel color
+                        Color newPixel = Color.FromArgb(newIntensity, newIntensity, newIntensity);
+                        ditheredImage.SetPixel(x, y, newPixel);
                     }
                 }
-                thresholds[i] = count == 0 ? 0 : sum / count;
+
+                return ditheredImage;
             }
-
-            // Apply dithering
-            for (int y = 0; y < originalImage.Height; y++)
-            {
-                for (int x = 0; x < originalImage.Width; x++)
-                {
-                    Color pixel = originalImage.GetPixel(x, y);
-                    int intensity = pixel.R;
-
-                    // Find the range that the intensity belongs to
-                    int rangeIndex = Math.Min(intensity / (range + 1), splits - 2); // Ensure rangeIndex is within bounds
-
-                    // Assign the new intensity based on the threshold
-                    int newIntensity = intensity <= thresholds[rangeIndex] ? rangeIndex * (range) : (rangeIndex + 1) * (range);
-
-                    // Set the new pixel color
-                    Color newPixel = Color.FromArgb(newIntensity, newIntensity, newIntensity);
-                    ditheredImage.SetPixel(x, y, newPixel);
-                }
-            }
-
-            return ditheredImage;
-        }
        
 
 
