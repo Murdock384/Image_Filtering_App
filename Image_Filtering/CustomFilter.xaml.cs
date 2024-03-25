@@ -17,12 +17,61 @@ namespace Image_Filtering
         public CustomFilter()
         {
             InitializeComponent();
-
-
+            
+            Canvas.Loaded += Canvas_Loaded;
             FunctionGraph.Points = new PointCollection() { new Point(0, 0), new Point(255, 255) };
             UpdatePolyline();
-        }
 
+        }
+        private void Canvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            DrawGridLines();
+        }
+        private void DrawGridLines()
+        {
+           
+            var gridLines = Canvas.Children.OfType<Line>().ToList();
+            foreach (var line in gridLines)
+            {
+                Canvas.Children.Remove(line);
+            }
+
+            
+            for (int i = 0; i <= 10; i++)
+            {
+                double yPos = Canvas.ActualHeight / 10 * i;
+                Line horizontalLine = new Line
+                {
+                    X1 = 0,
+                    Y1 = yPos,
+                    X2 = Canvas.ActualWidth,
+                    Y2 = yPos,
+                    Stroke = Brushes.White,
+                    StrokeThickness = 0.5, 
+                    StrokeDashArray = new DoubleCollection(new double[] { 2, 2 }), 
+                    Opacity = 0.5 
+                };
+                Canvas.Children.Add(horizontalLine);
+            }
+
+           
+            for (int i = 0; i <= 10; i++)
+            {
+                double xPos = Canvas.ActualWidth / 10 * i;
+                Line verticalLine = new Line
+                {
+                    X1 = xPos,
+                    Y1 = 0,
+                    X2 = xPos,
+                    Y2 = Canvas.ActualHeight,
+                    Stroke = Brushes.White,
+                    StrokeThickness = 0.5, 
+                    StrokeDashArray = new DoubleCollection(new double[] { 2, 2 }),
+                    Opacity = 0.5 
+                };
+                Canvas.Children.Add(verticalLine);
+            }
+        }
 
         private void DrawEllipse(Point position)
         {
@@ -30,7 +79,7 @@ namespace Image_Filtering
             {
                 Width = 10,
                 Height = 10,
-                Fill = Brushes.Red,
+                Fill = Brushes.Black,
                 Stroke = Brushes.Black,
                 StrokeThickness = 1
             };
@@ -51,6 +100,8 @@ namespace Image_Filtering
 
         private void UpdatePolyline()
         {
+            
+            DrawGridLines();
 
             var orderedPoints = FunctionGraph.Points.OrderBy(p => p.X);
             FunctionGraph.Points = new PointCollection(orderedPoints);
@@ -68,7 +119,7 @@ namespace Image_Filtering
 
             foreach (Point point in FunctionGraph.Points)
             {
-                
+
                 if (!existingEllipses.Any(ellipse =>
                     Math.Abs(Canvas.GetLeft(ellipse) + ellipse.Width / 2 - point.X) < 1 &&
                     Math.Abs(Canvas.GetTop(ellipse) + ellipse.Height / 2 - point.Y) < 1))
@@ -76,6 +127,7 @@ namespace Image_Filtering
                     DrawEllipse(point);
                 }
             }
+            
         }
 
 

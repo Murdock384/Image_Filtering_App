@@ -246,14 +246,15 @@ namespace Image_Filtering
         }
         private void MedianFilter_Click(object sender, RoutedEventArgs e)
         {
-            
+
 
             Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
             Bitmap medianFiltered = Filters.ApplyMedianFilter(imageToFilter);
             DisplayImage(medianFiltered, false);
         }
+        /*OpenAverageDitheringYCbCr_Window_Click*/
 
-        
+
         private void ApplyConvolutionalFilterMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -321,6 +322,16 @@ namespace Image_Filtering
             DisplayImage(ditheredImage, false);
         }
 
+        private void AverageDitheringToYCbCr_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyAverageDitheringYCbCr(3);
+        }
+        private void ApplyAverageDitheringYCbCr(int splits)
+        {
+            Bitmap imageToFilter = (filteredImage == null) ? originalImage : filteredImage;
+            Bitmap ditheredImage = Dithering.ApplyDitheringToYCbCr(imageToFilter, splits);
+            DisplayImage(ditheredImage, false);
+        }
         private void OpenMedianCutWindow_Click(object sender, RoutedEventArgs e)
         {
             MedianCutColorPalleteSelector selectorWindow = new MedianCutColorPalleteSelector();

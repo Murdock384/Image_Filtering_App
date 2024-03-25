@@ -62,6 +62,7 @@
                     <MenuItem Click="AverageDitheringKEqual8_Click" Header="k=8"  Foreground="Black"/>
                     <MenuItem Click="AverageDitheringKEqual16_Click" Header="k=16"  Foreground="Black"/>
                 </MenuItem>
+                <MenuItem Header="Average Dithering using YCbCr channel" Click="AverageDitheringToYCbCr_Click" Foreground="Black" />
                 <MenuItem Header="Median Cut Quantization" Click="OpenMedianCutWindow_Click" Foreground="Black" />
             </MenuItem>
             <MenuItem Header="Exit" Click="ExitMenuItem_Click" FontSize="15" Foreground="White"  />
